@@ -1,0 +1,30 @@
+simulation.startTime = 0.0
+simulation.stopTime = 10.0
+simulation.timeStep = 0.05
+
+def k = 1.0
+def b = 0.7
+def m = 2.0
+
+simulation.schema.with {
+	block('source', 'source.step', [tStart: 0.0, tStop: 1.0, amplitude: 1.0])
+	block('sum', 'mixed.sum', [operations: '+--'])
+	block('gainOOM', 'mixed.gain', [scaleFactor: 1/m])
+	block('integratorA', 'mixed.integrator', [])
+	block('integratorB', 'mixed.integrator', [])
+	block('gainK', 'mixed.gain', [scaleFactor: k])
+	block('gainB', 'mixed.gain', [scaleFactor: b])
+	block('target', 'target.scope', [])
+	block('targetInput', 'target.scope', [])
+
+	connect 'source:O1', 'targetInput:I1'
+	connect 'source:O1', 'sum:I1'
+	connect 'sum:O1', 'gainOOM:I1'
+	connect 'gainOOM:O1', 'integratorA:I1'
+	connect 'integratorA:O1', 'integratorB:I1'
+	connect 'integratorB:O1', 'gainK:I1'
+	connect 'gainK:O1', 'sum:I2'
+	connect 'integratorA:O1', 'gainB:I1'
+	connect 'gainB:O1', 'sum:I3'
+	connect 'integratorB:O1', 'target:I1'
+}

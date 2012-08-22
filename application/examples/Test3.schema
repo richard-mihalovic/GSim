@@ -1,0 +1,18 @@
+def a = 1.0
+def f = 1.0
+def p = 0.0
+def b = 0.0
+
+simulation.schema.with {
+	block('source', 'source.sin', [
+		amplitude: a,
+		frequency: f,
+		phase: p,
+		bias: b
+	])
+	block('gain', 'mixed.gain', [ scaleFactor: 5.0 ])
+	block('target', 'target.scope', [ ])
+
+	connect 'source:O1', 'gain:I1'
+	connect 'gain:O1', 'target:I1'
+}

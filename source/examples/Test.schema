@@ -1,0 +1,10 @@
+simulation.schema.with {
+	block('source', 'source.constant', [
+	    value: 1.0
+	])
+	block('gain', 'mixed.gain', [ scaleFactor: 5.0 ])
+	block('target', 'target.scope', [ ])
+	
+	connect 'source:O1', 'gain:I1'
+	connect 'gain:O1', 'target:I1'
+}

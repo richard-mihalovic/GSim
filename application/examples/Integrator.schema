@@ -1,0 +1,15 @@
+simulation.startTime = 0.0
+simulation.stopTime = 2*Math.PI
+simulation.timeStep = 0.05
+
+simulation.schema.with {
+	block('source', 'source.sin', [])
+	block('integrator', 'mixed.integrator', [])
+	block('target1', 'target.scope', [ ])
+	block('target2', 'target.scope', [ ])
+
+	connect 'source:O1', 'integrator:I1'
+
+	connect 'source:O1', 'target1:I1'
+	connect 'integrator:O1', 'target2:I1'
+}

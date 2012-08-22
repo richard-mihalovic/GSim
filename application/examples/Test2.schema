@@ -1,0 +1,12 @@
+simulation.schema.with {
+	block('source1', 'source.constant', [value: 1.0])
+	block('source2', 'source.constant', [value: 1.0])
+
+	block('multiply', 'mixed.gain', [scaleFactor: 10.0])
+
+	block('target', 'target.scope', [ ])
+
+	addConnection('source1:O1', 'multiply:I1')
+	addConnection('source2:O1', 'multiply:I2')
+	addConnection('multiply:O1', 'target:I1')
+}

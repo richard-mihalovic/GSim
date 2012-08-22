@@ -1,0 +1,67 @@
+def x0 = 0.0
+def y0 = 0.0
+def v0 = 1000 // m/s
+def alfa = 55 * Math.PI / 180
+def g = 9.81 // m/s^2
+
+simulation.startTime = 0.0
+simulation.stopTime = 170.0
+simulation.timeStep = 3
+
+simulation.schema.with {
+
+	// CONSTANTS
+	block('x0', 'source.constant', [ value: x0 ])
+	block('y0', 'source.constant', [ value: y0 ])
+	block('v0', 'source.constant', [ value: v0 ])
+	block('alfa', 'source.constant', [ value: alfa ])
+	block('g', 'source.constant', [ value: g ])
+
+	// VARIABLES
+	block('time', 'source.time', [])
+
+	// TARGETS
+	block('targetXY', 'target.xyscope', [])
+	block('targetX', 'target.scope', [])
+	block('targetY', 'target.scope', [])
+
+	// X = Xo + Vo*t*cos(alfa)
+	block('cos', 'mixed.cos', [])
+	block('multiplyx', 'mixed.multiply', [operations: '***'])
+	block('sumatorx', 'mixed.sum', [operations: '++'])
+	
+	connect 'time:O1', 'multiplyx:I1'
+	connect 'v0:O1', 'multiplyx:I2'
+	connect 'alfa:O1', 'cos:I1'
+	connect 'cos:O1', 'multiplyx:I3'
+	connect 'x0:O1', 'sumatorx:I1'
+	connect 'multiplyx:O1', 'sumatorx:I2'
+
+	// Y = Yo + Vo*t*sin(alfa) - 0.5*g*t*t
+	block('sin', 'mixed.sin', [])
+	block('multiplyy', 'mixed.multiply', [operations: '***'])
+	block('multiplyyy', 'mixed.multiply', [operations: '***'])
+	block('sumatory', 'mixed.sum', [operations: '++-'])
+	block('gain12', 'mixed.gain', [scaleFactor: 1/2])
+
+	connect 'time:O1', 'multiplyy:I1'
+	connect 'v0:O1', 'multiplyy:I2'
+	connect 'alfa:O1', 'sin:I1'
+	connect 'sin:O1', 'multiplyy:I3'
+	connect 'y0:O1', 'sumatory:I1'
+	connect 'multiplyy:O1', 'sumatory:I2'
+
+	connect 'g:O1', 'gain12:I1'
+	connect 'time:O1', 'multiplyyy:I1'
+	connect 'time:O1', 'multiplyyy:I2'
+	connect 'gain12:O1', 'multiplyyy:I3'
+	connect 'multiplyyy:O1', 'sumatory:I3'
+
+	// DISPLAY TARGETS
+	connect 'sumatorx:O1', 'targetXY:I1'
+	connect 'sumatory:O1', 'targetXY:I2'
+
+	connect 'sumatory:O1', 'targetY:I1'
+
+	connect 'sumatorx:O1', 'targetX:I1'
+}
