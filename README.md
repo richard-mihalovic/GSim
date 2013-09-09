@@ -1,4 +1,4 @@
-![GSim screenshot](http://www.shareimage.org/images/khm40gzxjx2ocpaehx1v.jpg)
+![GSim screenshot](https://raw.github.com/richard-mihalovic/GSim/master/screenshot.png)
 
 Example schema code:
 
@@ -18,5 +18,5 @@ Example schema code:
 		connect 'cos:O1', 'target12:I2'
 
 		connect 'sin:O1', 'target1:I1'
-		connect 'cos:O1', 'target2:I1'	
+		connect 'cos:O1', 'target2:I1'
 	}
